@@ -57,3 +57,17 @@ class RouteSerializer(serializers.ModelSerializer):
             "destination",
             "distance",
         )
+
+
+class JourneySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "departure_time",
+            "arrival_time",
+            "route",
+            "train",
+            "crew",
+        )
+
