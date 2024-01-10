@@ -16,3 +16,16 @@ class TrainTypeSerializer(serializers.ModelSerializer):
         model = TrainType
         fields = ("id", "type_name",)
 
+
+class TrainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = (
+            "id",
+            "name",
+            "cargo_num",
+            "places_in_cargo",
+            "kilometer_price",
+            "train_type",
+        )
+
