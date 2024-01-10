@@ -1,4 +1,25 @@
 from django.db import models
+from math import radians, sin, cos, sqrt, atan2
+
+
+def station_distance(
+        lat1: float,
+        lon1: float,
+        lat2: float,
+        lon2: float
+) -> float:
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+
+    delta_lat = lat2 - lat1
+    delta_lon = lon2 - lon1
+
+    a = sin(delta_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(delta_lon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    earth_radius = 6371.0
+    distance = earth_radius * c
+
+    return distance
 
 
 class Crew(models.Model):
@@ -32,3 +53,33 @@ class Train(models.Model):
 
     def __str__(self):
         return f"Train:{self.name} all places:{self.capacity}"
+
+
+class Station(models.Model):
+    name = models.CharField(max_length=255)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    service_cost = models.FloatField()
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Route(models.Model):
+    source = models.ForeignKey(Station, on_delete=models.CASCADE)
+    destination = models.ForeignKey(Station, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Source:{self.source.name} destination:{self.destination.name}"
+
+    @property
+    def distance(self) -> float:
+        return station_distance(
+            self.source.latitude,
+            self.source.longitude,
+            self.destination.latitude,
+            self.destination.longitude
+        )
