@@ -83,3 +83,28 @@ class Route(models.Model):
             self.destination.latitude,
             self.destination.longitude
         )
+
+
+class Journey(models.Model):
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
+    route = models.ForeignKey(Route, on_delete=models.CASCADE)
+    train = models.ForeignKey(Train, on_delete=models.CASCADE)
+    crew = models.ManyToManyField(Crew, related_name="journey")
+
+    class Meta:
+        ordering = ["-departure_time"]
+
+    def __str__(self):
+        return f"Departure time:{self.departure_time} arrival time:{self.arrival_time}"
+
+    @property
+    def price_trip(self) -> float:
+        price_distance = self.route.distance * self.train.kilometer_price
+        return (
+            price_distance
+            + self.route.source.service_cost
+            + self.route.destination.service_cost
+        )
+
+
