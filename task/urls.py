@@ -7,6 +7,7 @@ from task.views import (
     StationViewSet,
     RouteViewSet,
     JourneyViewSet,
+    OrderViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -16,6 +17,7 @@ router.register("crew", CrewViewSet)
 router.register("station", StationViewSet)
 router.register("route", RouteViewSet)
 router.register("journey", JourneyViewSet)
+router.register("order", OrderViewSet)
 
 
 urlpatterns = [path("", include(router.urls))]
