@@ -17,6 +17,7 @@ from task.serializers import (
     RouteSerializer,
     JourneySerializer,
     OrderSerializer,
+    TicketSerializer,
 )
 
 
@@ -53,3 +54,8 @@ class JourneyViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer

@@ -81,3 +81,14 @@ class OrderSerializer(serializers.ModelSerializer):
             "user"
         )
 
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = (
+            "id",
+            "journey",
+            "order",
+            "cargo_num",
+            "place_in_cargo"
+        )
