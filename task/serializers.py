@@ -47,3 +47,13 @@ class StationSerializer(serializers.ModelSerializer):
             "service_cost",
         )
 
+
+class RouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Route
+        fields = (
+            "id",
+            "source",
+            "destination",
+            "distance",
+        )

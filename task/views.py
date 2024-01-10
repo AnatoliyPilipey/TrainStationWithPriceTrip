@@ -14,6 +14,7 @@ from task.serializers import (
     TrainSerializer,
     CrewSerializer,
     StationSerializer,
+    RouteSerializer,
 )
 
 
@@ -35,3 +36,8 @@ class CrewViewSet(viewsets.ModelViewSet):
 class StationViewSet(viewsets.ModelViewSet):
     queryset = Station.objects.all()
     serializer_class = StationSerializer
+
+
+class RouteViewSet(viewsets.ModelViewSet):
+    queryset = Route.objects.all()
+    serializer_class = RouteSerializer
