@@ -44,7 +44,11 @@ class Train(models.Model):
     cargo_num = models.IntegerField()
     places_in_cargo = models.IntegerField()
     kilometer_price = models.FloatField()
-    train_type = models.ForeignKey(TrainType, on_delete=models.CASCADE)
+    train_type = models.ForeignKey(
+        TrainType,
+        on_delete=models.CASCADE,
+        related_name="trains"
+    )
 
     class Meta:
         ordering = ["name"]
@@ -71,8 +75,16 @@ class Station(models.Model):
 
 
 class Route(models.Model):
-    source = models.ForeignKey(Station, on_delete=models.CASCADE)
-    destination = models.ForeignKey(Station, on_delete=models.CASCADE)
+    source = models.ForeignKey(
+        Station,
+        on_delete=models.CASCADE,
+        related_name="routers_source"
+    )
+    destination = models.ForeignKey(
+        Station,
+        on_delete=models.CASCADE,
+        related_name="routers_destination"
+    )
 
     def __str__(self):
         return f"Source:{self.source.name} destination:{self.destination.name}"
