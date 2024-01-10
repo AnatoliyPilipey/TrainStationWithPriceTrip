@@ -1,5 +1,7 @@
 from django.db import models
 from math import radians, sin, cos, sqrt, atan2
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 
 def station_distance(
@@ -108,3 +110,71 @@ class Journey(models.Model):
         )
 
 
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return str(self.created_at)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    journey = models.ForeignKey(
+        Journey, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="tickets"
+    )
+    cargo_num = models.IntegerField()
+    place_in_cargo = models.IntegerField()
+
+    @staticmethod
+    def validate_ticket(cargo_num, place_in_cargo, train, error_to_raise):
+        for ticket_attr_value, ticket_attr_name, train_attr_name in [
+            (cargo_num, "cargo_num", "cargo_num"),
+            (place_in_cargo, "place_in_cargo", "places_in_cargo"),
+        ]:
+            count_attrs = getattr(train, train_attr_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise error_to_raise(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} "
+                        f"number must be in available range: "
+                        f"(1, {train_attr_name}): "
+                        f"(1, {count_attrs})"
+                    }
+                )
+
+    def clean(self):
+        Ticket.validate_ticket(
+            self.cargo_num,
+            self.place_in_cargo,
+            self.journey.train,
+            ValidationError,
+        )
+
+    def save(
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
+
+    def __str__(self):
+        return (
+            f"{str(self.journey)} (row: {self.cargo_num}, seat: {self.place_in_cargo})"
+        )
+
+    class Meta:
+        unique_together = ("journey", "cargo_num", "place_in_cargo")
+        ordering = ["cargo_num", "place_in_cargo"]
