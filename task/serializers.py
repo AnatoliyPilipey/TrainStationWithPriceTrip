@@ -36,3 +36,14 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name")
 
 
+class StationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Station
+        fields = (
+            "id",
+            "name",
+            "latitude",
+            "longitude",
+            "service_cost",
+        )
+

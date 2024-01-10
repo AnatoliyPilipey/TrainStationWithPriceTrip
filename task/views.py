@@ -13,6 +13,7 @@ from task.serializers import (
     TrainTypeSerializer,
     TrainSerializer,
     CrewSerializer,
+    StationSerializer,
 )
 
 
@@ -29,3 +30,8 @@ class TrainViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
+
+
+class StationViewSet(viewsets.ModelViewSet):
+    queryset = Station.objects.all()
+    serializer_class = StationSerializer
