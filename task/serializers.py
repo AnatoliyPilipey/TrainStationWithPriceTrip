@@ -45,6 +45,22 @@ class TrainListSerializer(TrainSerializer):
         )
 
 
+class TrainDetailSerializer(TrainSerializer):
+    train_type = serializers.StringRelatedField()
+
+    class Meta:
+        model = Train
+        fields = (
+            "id",
+            "name",
+            "cargo_num",
+            "places_in_cargo",
+            "capacity",
+            "train_type",
+            "kilometer_price",
+        )
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew

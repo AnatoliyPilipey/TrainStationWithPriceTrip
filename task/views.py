@@ -15,6 +15,7 @@ from task.serializers import (
     TrainTypeSerializer,
     TrainSerializer,
     TrainListSerializer,
+    TrainDetailSerializer,
     CrewSerializer,
     StationSerializer,
     RouteSerializer,
@@ -44,6 +45,8 @@ class TrainViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return TrainListSerializer
+        if self.action == "retriv":
+            return TrainDetailSerializer
         return TrainSerializer
 
 
