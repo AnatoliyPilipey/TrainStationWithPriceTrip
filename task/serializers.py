@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from task.models import (
     TrainType,
     Train,
@@ -83,6 +84,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs=attrs)
+        Ticket.validate_ticket(
+            attrs["cargo_num"],
+            attrs["place_in_cargo"],
+            attrs["journey"].train,
+            ValidationError
+        )
+        return data
+
     class Meta:
         model = Ticket
         fields = (
