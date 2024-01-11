@@ -8,7 +8,7 @@ load_dotenv()
 
 class IsAdminOrIfAuthenticatedReadOnly(BasePermission):
     def has_permission(self, request, view):
-        if os.getenv("PERMISSIONS_OFF") is True:
+        if os.getenv("PERMISSIONS_STATUS") == "off":
             return True
 
         return bool(

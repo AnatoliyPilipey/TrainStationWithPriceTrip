@@ -14,6 +14,7 @@ from task.models import (
 from task.serializers import (
     TrainTypeSerializer,
     TrainSerializer,
+    TrainListSerializer,
     CrewSerializer,
     StationSerializer,
     RouteSerializer,
@@ -39,6 +40,11 @@ class TrainViewSet(viewsets.ModelViewSet):
     queryset = Train.objects.all()
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TrainListSerializer
+        return TrainSerializer
 
 
 class CrewViewSet(viewsets.ModelViewSet):
