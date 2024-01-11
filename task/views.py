@@ -17,7 +17,7 @@ from task.serializers import (
     RouteSerializer,
     JourneySerializer,
     OrderSerializer,
-    TicketSerializer,
+    OrderCreateSerializer,
 )
 
 
@@ -67,7 +67,12 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def get_serializer_class(self):
+        if self.action == "create":
+            return OrderCreateSerializer
 
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
