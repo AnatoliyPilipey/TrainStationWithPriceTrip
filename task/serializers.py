@@ -208,7 +208,49 @@ class TicketSerializer(serializers.ModelSerializer):
         )
 
 
+class TicketDetailSerializer(TicketSerializer):
+    departure_time = serializers.DateTimeField(
+        source="journey.departure_time",
+        read_only=True
+    )
+    arrival_time = serializers.DateTimeField(
+        source="journey.arrival_time",
+        read_only=True
+    )
+    source = serializers.CharField(
+        source="journey.route.source.name",
+        read_only=True,
+    )
+    destination = serializers.CharField(
+        source="journey.route.destination.name",
+        read_only=True,
+    )
+    train = serializers.CharField(
+        source="journey.train.name",
+        read_only=True,
+    )
+    price_trip = serializers.FloatField(
+        source="journey.price_trip",
+        read_only=True
+    )
+
+    class Meta:
+        model = Ticket
+        fields = (
+            "id",
+            "departure_time",
+            "arrival_time",
+            "source",
+            "destination",
+            "train",
+            "cargo_num",
+            "place_in_cargo",
+            "price_trip",
+        )
+
+
 class OrderSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Order
         fields = (
@@ -228,3 +270,18 @@ class OrderCreateSerializer(OrderSerializer):
             for ticket_data in tickets_data:
                 Ticket.objects.create(order=order, **ticket_data)
             return order
+
+
+class OrderDetailSerializer(OrderSerializer):
+    tickets = TicketDetailSerializer(
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "created_at",
+            "tickets",
+        )
