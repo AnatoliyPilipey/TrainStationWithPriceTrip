@@ -21,7 +21,7 @@ def station_distance(
     earth_radius = 6371.0
     distance = earth_radius * c
 
-    return distance
+    return distance * 100 // 1 / 100
 
 
 class Crew(models.Model):
