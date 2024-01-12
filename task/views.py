@@ -27,6 +27,7 @@ from task.serializers import (
     JourneyDetailSerializer,
     OrderSerializer,
     OrderCreateSerializer,
+    OrderListSerializer,
     OrderDetailSerializer,
 )
 
@@ -130,6 +131,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return OrderCreateSerializer
+
+        if self.action == "list":
+            return OrderListSerializer
 
         if self.action == "retrieve":
             return OrderDetailSerializer

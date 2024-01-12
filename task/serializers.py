@@ -249,6 +249,21 @@ class TicketDetailSerializer(TicketSerializer):
         )
 
 
+class TicketListSerializer(TicketDetailSerializer):
+    route = serializers.StringRelatedField(
+        source="journey.route",
+        read_only=True
+    )
+
+    class Meta:
+        model = Ticket
+        fields = (
+            "departure_time",
+            "route",
+            "price_trip",
+        )
+
+
 class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -270,6 +285,20 @@ class OrderCreateSerializer(OrderSerializer):
             for ticket_data in tickets_data:
                 Ticket.objects.create(order=order, **ticket_data)
             return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketListSerializer(
+        many=True,
+        read_only=True,
+    )
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "tickets",
+        )
 
 
 class OrderDetailSerializer(OrderSerializer):
