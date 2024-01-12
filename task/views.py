@@ -19,6 +19,7 @@ from task.serializers import (
     CrewSerializer,
     CrewListSerializer,
     StationSerializer,
+    StationListSerializer,
     RouteSerializer,
     JourneySerializer,
     OrderSerializer,
@@ -72,6 +73,11 @@ class StationViewSet(
     queryset = Station.objects.all()
     serializer_class = StationSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return StationListSerializer
+        return StationSerializer
 
 
 class RouteViewSet(viewsets.ModelViewSet):
