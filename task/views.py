@@ -1,6 +1,6 @@
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
-
+from django.db.models import F, Count
 from task.permissions import IsAdminOrIfAuthenticatedReadOnly
 from task.models import (
     TrainType,
@@ -107,6 +107,18 @@ class JourneyViewSet(viewsets.ModelViewSet):
             return JourneyDetailSerializer
 
         return JourneySerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.action == "list":
+            queryset = queryset.annotate(
+                tickets_available=(
+                    F("train__cargo_num")
+                    * F("train__places_in_cargo")
+                    - Count("tickets")
+                )
+            )
+        return queryset
 
 
 class OrderViewSet(viewsets.ModelViewSet):

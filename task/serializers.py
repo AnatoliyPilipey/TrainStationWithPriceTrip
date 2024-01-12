@@ -147,6 +147,7 @@ class JourneyListSerializer(JourneySerializer):
         read_only=True,
         slug_field="name"
     )
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Journey
@@ -156,6 +157,7 @@ class JourneyListSerializer(JourneySerializer):
             "route",
             "train",
             "price_trip",
+            "tickets_available",
         )
 
 
