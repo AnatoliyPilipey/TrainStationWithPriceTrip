@@ -140,6 +140,25 @@ class JourneySerializer(serializers.ModelSerializer):
         )
 
 
+class JourneyListSerializer(JourneySerializer):
+    route = serializers.StringRelatedField()
+    train = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field="name"
+    )
+
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "departure_time",
+            "route",
+            "train",
+            "price_trip",
+        )
+
+
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs=attrs)

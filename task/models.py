@@ -36,7 +36,6 @@ class Crew(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-
 class TrainType(models.Model):
     type_name = models.CharField(max_length=65, unique=True)
 
@@ -124,7 +123,7 @@ class Journey(models.Model):
             price_distance
             + self.route.source.service_cost
             + self.route.destination.service_cost
-        )
+        ) * 100 // 1 / 100
 
 
 class Order(models.Model):

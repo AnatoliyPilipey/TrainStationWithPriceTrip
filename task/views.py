@@ -23,6 +23,7 @@ from task.serializers import (
     RouteSerializer,
     RouteListSerializer,
     JourneySerializer,
+    JourneyListSerializer,
     OrderSerializer,
     OrderCreateSerializer,
 )
@@ -96,6 +97,11 @@ class JourneyViewSet(viewsets.ModelViewSet):
     queryset = Journey.objects.all()
     serializer_class = JourneySerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return JourneyListSerializer
+        return JourneySerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
