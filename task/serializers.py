@@ -120,6 +120,19 @@ class RouteListSerializer(RouteSerializer):
         )
 
 
+class RouteDetailSerializer(RouteSerializer):
+    source = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field="name"
+    )
+    destination = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field="name"
+    )
+
+
 class JourneySerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
