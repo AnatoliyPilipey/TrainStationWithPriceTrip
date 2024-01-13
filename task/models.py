@@ -1,7 +1,11 @@
+import os
+import uuid
+
 from django.db import models
 from math import radians, sin, cos, sqrt, atan2
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.utils.text import slugify
 
 
 def station_distance(
@@ -24,9 +28,21 @@ def station_distance(
     return distance * 100 // 1 / 100
 
 
+def crew_image_file_path(instance, filename):
+    _, extension = os.path.split(filename)
+
+    filename = f"{slugify(instance.first_name)}-{uuid.uuid4()}.{extension}"
+
+    return os.path.join("upload/buses/", filename)
+
+
 class Crew(models.Model):
     first_name = models.CharField(max_length=65)
     last_name = models.CharField(max_length=65)
+    image = models.ImageField(
+        null=True,
+        upload_to=crew_image_file_path
+    )
 
     @property
     def full_name(self):
