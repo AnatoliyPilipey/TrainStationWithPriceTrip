@@ -117,7 +117,7 @@ class JourneyViewSet(viewsets.ModelViewSet):
         "route__destination",
     )
     serializer_class = JourneySerializer
-    pagination_class =JourneyPagination
+    pagination_class = JourneyPagination
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
@@ -158,6 +158,12 @@ class JourneyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class OrderPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = "page_size"
+    max_page_size = 20
+
+
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related(
         "tickets__journey__train__train_type",
@@ -165,6 +171,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         "tickets__journey__route__destination",
     )
     serializer_class = OrderSerializer
+    pagination_class = OrderPagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
