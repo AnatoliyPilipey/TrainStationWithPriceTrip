@@ -1,4 +1,4 @@
-from datetime import datetime
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import F, Count
@@ -104,6 +104,12 @@ class RouteViewSet(viewsets.ModelViewSet):
         return RouteSerializer
 
 
+class JourneyPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
+
 class JourneyViewSet(viewsets.ModelViewSet):
     queryset = Journey.objects.prefetch_related(
         "train",
@@ -111,6 +117,7 @@ class JourneyViewSet(viewsets.ModelViewSet):
         "route__destination",
     )
     serializer_class = JourneySerializer
+    pagination_class =JourneyPagination
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
