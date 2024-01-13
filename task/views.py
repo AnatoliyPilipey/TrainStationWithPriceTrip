@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import F, Count
@@ -121,6 +122,11 @@ class JourneyViewSet(viewsets.ModelViewSet):
 
         return JourneySerializer
 
+    @staticmethod
+    def _params_to_strs(qs):
+        """Converts string to a list of string"""
+        return [value for value in qs.split(",")]
+
     def get_queryset(self):
         queryset = self.queryset
         if self.action == "list":
@@ -131,6 +137,17 @@ class JourneyViewSet(viewsets.ModelViewSet):
                     - Count("tickets")
                 )
             )
+            departure = self.request.query_params.get("departure_date")
+            station = self.request.query_params.get("source_station")
+
+            if departure:
+                dates = self._params_to_strs(departure)
+                queryset = queryset.filter(departure_time__date__in=dates)
+
+            if station:
+                queryset = queryset.filter(
+                    route__source__name__icontains=station
+                )
         return queryset
 
 
