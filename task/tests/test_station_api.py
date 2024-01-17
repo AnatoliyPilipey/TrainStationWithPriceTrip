@@ -1,4 +1,3 @@
-
 from django.test import TestCase
 from django.urls import reverse
 
@@ -9,7 +8,7 @@ from rest_framework import status
 STATION_URL = reverse("task:station-list")
 
 
-class UnauthenticatedMovieApiTests(TestCase):
+class UnauthenticatedStationApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
