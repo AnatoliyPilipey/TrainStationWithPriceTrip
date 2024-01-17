@@ -8,6 +8,7 @@ class CreateUserView(generics.CreateAPIView):
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
+    """The user who is currently authenticated"""
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
 

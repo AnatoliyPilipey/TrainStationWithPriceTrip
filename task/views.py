@@ -42,12 +42,14 @@ class TrainTypeViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
+    """Variety of trains by movement model"""
     queryset = TrainType.objects.all()
     serializer_class = TrainTypeSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class TrainViewSet(viewsets.ModelViewSet):
+    """Name of the train with car number and number of seats in the car"""
     queryset = Train.objects.select_related("train_type")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -61,6 +63,7 @@ class TrainViewSet(viewsets.ModelViewSet):
 
 
 class CrewViewSet(viewsets.ModelViewSet):
+    """Team member to operate the train"""
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -78,6 +81,7 @@ class StationViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
+    """Name of stations where this type of train runs"""
     queryset = Station.objects.all()
     serializer_class = StationSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -103,6 +107,10 @@ class RouteViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return RouteDetailSerializer
         return RouteSerializer
+
+    def list(self, request, *args, **kwargs):
+        """Route indicating start and end stations"""
+        return super().list(request, *args, **kwargs)
 
 
 class JourneyPagination(PageNumberPagination):
@@ -173,6 +181,7 @@ class JourneyViewSet(viewsets.ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
+        """Trip with train, route, crew and cost"""
         return super().list(request, *args, **kwargs)
 
 
@@ -210,3 +219,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        """An order created by a registered user with simultaneous purchase of tickets"""
+        return super().list(request, *args, **kwargs)
