@@ -41,7 +41,7 @@ class AuthenticatedStationApiTests(TestCase):
         )
         self.client.force_authenticate(self.user)
 
-    def test_list_movie(self):
+    def test_list_station(self):
         sample_station()
         sample_station()
         res = self.client.get(STATION_URL)
