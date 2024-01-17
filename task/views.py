@@ -3,6 +3,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import F, Count
 from task.permissions import IsAdminOrIfAuthenticatedReadOnly
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from task.models import (
     TrainType,
     Train,
@@ -157,6 +158,23 @@ class JourneyViewSet(viewsets.ModelViewSet):
                 )
         return queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "departure_date",
+                type={"type": "date"},
+                description="Filter by departure date (ex. ?departure_date=2023-10-25"
+            ),
+            OpenApiParameter(
+                "source_station",
+                type={"type": "str"},
+                description="Filter by source station name (ex. ?source_station=1"
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class OrderPagination(PageNumberPagination):
     page_size = 3
@@ -192,4 +210,3 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
