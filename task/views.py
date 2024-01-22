@@ -171,12 +171,12 @@ class JourneyViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "departure_date",
                 type={"type": "date"},
-                description="Filter by departure date (ex. ?departure_date=2023-10-25"
+                description="Filter by departure date (ex. ?departure_date=2023-10-25,2024-11-12"
             ),
             OpenApiParameter(
                 "source_station",
                 type={"type": "str"},
-                description="Filter by source station name (ex. ?source_station=1"
+                description="Filter by source station name (ex. ?source_station=Ki"
             )
         ]
     )
