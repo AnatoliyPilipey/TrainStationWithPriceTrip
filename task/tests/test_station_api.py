@@ -5,7 +5,10 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from task.models import Station
-from task.serializers import StationListSerializer
+from task.serializers import (
+    StationListSerializer,
+    StationSerializer,
+)
 
 
 STATION_URL = reverse("task:station-list")
@@ -21,6 +24,10 @@ def sample_station(**params):
     defaults.update(params)
 
     return Station.objects.create(**defaults)
+
+
+def detail_url(station_id):
+    return reverse("task:station-detail", args=[station_id])
 
 
 class UnauthenticatedStationApiTests(TestCase):
@@ -52,3 +59,14 @@ class AuthenticatedStationApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+    def test_retrieve_station_detail(self):
+        station = sample_station()
+
+        url = detail_url(station.id)
+
+        res = self.client.get(url)
+
+        serializer = StationSerializer(station)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
