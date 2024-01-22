@@ -15,6 +15,7 @@ from task.models import (
 )
 from task.serializers import (
     JourneyListSerializer,
+    JourneyDetailSerializer,
 )
 
 
@@ -72,6 +73,10 @@ def sample_train(**params):
     return Train.objects.create(**defaults)
 
 
+def detail_url(journey_id):
+    return reverse("task:journey-detail", args=[journey_id])
+
+
 class UnauthenticatedJourneyApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -113,3 +118,20 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data["results"], serializer.data)
+
+    def test_retrieve_journey_detail(self):
+        journey = Journey.objects.create(
+            departure_time="2024-01-12T00:00:00",
+            arrival_time="2024-01-13T00:00:00",
+            route=sample_route(),
+            train=sample_train(),
+        )
+
+        url = detail_url(journey.id)
+        res = self.client.get(url)
+
+        serializer = JourneyDetailSerializer(journey)
+        print()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
