@@ -5,7 +5,10 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from task.models import Route, Station
-from task.serializers import RouteListSerializer
+from task.serializers import (
+    RouteListSerializer,
+    RouteDetailSerializer,
+)
 
 
 ROUTE_URL = reverse("task:route-list")
@@ -21,6 +24,10 @@ def sample_station(**params):
     defaults.update(params)
 
     return Station.objects.create(**defaults)
+
+
+def detail_url(route_id):
+    return reverse("task:route-detail", args=[route_id])
 
 
 class UnauthenticatedRouteApiTests(TestCase):
@@ -56,3 +63,20 @@ class AuthenticatedRouteApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_retrieve_route_detail(self):
+        station1 = sample_station()
+        station2 = sample_station()
+        route = Route.objects.create(
+            source=station1,
+            destination=station2
+        )
+
+        url = detail_url(route.id)
+        res = self.client.get(url)
+
+        serializer = RouteDetailSerializer(route)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
