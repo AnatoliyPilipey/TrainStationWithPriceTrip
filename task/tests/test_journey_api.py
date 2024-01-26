@@ -58,19 +58,22 @@ def sample_route(**params):
 
 
 def sample_train(**params):
-    train_type = TrainType.objects.create(
-        type_name="test_type",
-    )
-    defaults = {
-        "name": "Test train 215",
-        "cargo_num": 23,
-        "places_in_cargo": 36,
-        "kilometer_price": 1.2,
-        "train_type": train_type
-    }
-    defaults.update(params)
+    try:
+        return Train.objects.get(pk=1)
+    except Exception:
+        train_type = TrainType.objects.create(
+            type_name="test_type",
+        )
+        defaults = {
+            "name": "Test train 215",
+            "cargo_num": 23,
+            "places_in_cargo": 36,
+            "kilometer_price": 1.2,
+            "train_type": train_type
+        }
+        defaults.update(params)
 
-    return Train.objects.create(**defaults)
+        return Train.objects.create(**defaults)
 
 
 def detail_url(journey_id):
@@ -135,3 +138,46 @@ class AuthenticatedJourneyApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+    def test_filter_journey_by_date(self):
+        Journey.objects.create(
+            departure_time="2023-01-12T00:00:00",
+            arrival_time="2023-01-13T00:00:00",
+            route=sample_route(),
+            train=sample_train(),
+        )
+
+        Journey.objects.create(
+            departure_time="2024-01-12T00:00:00",
+            arrival_time="2024-01-13T00:00:00",
+            route=sample_route(),
+            train=sample_train(),
+        )
+
+        Journey.objects.create(
+            departure_time="2025-01-12T00:00:00",
+            arrival_time="2025-01-13T00:00:00",
+            route=sample_route(),
+            train=sample_train(),
+        )
+
+        journey = Journey.objects.all().annotate(
+            tickets_available=Value(828, output_field=IntegerField())
+        )
+
+        journey1 = journey.get(pk=1)
+        serializer1 = JourneyListSerializer(journey1, many=False)
+
+        journey2 = journey.get(pk=2)
+        serializer2 = JourneyListSerializer(journey2, many=False)
+
+        journey3 = journey.get(pk=3)
+        serializer3 = JourneyListSerializer(journey3, many=False)
+
+        res = self.client.get(
+            JOURNEY_URL,
+            {"departure_date": "2023-01-12,2024-01-12"}
+        )
+
+        self.assertIn(serializer1.data, res.data["results"])
+        self.assertIn(serializer2.data, res.data["results"])
+        self.assertNotIn(serializer3.data, res.data["results"])
