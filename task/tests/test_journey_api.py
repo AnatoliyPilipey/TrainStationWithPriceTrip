@@ -181,3 +181,48 @@ class AuthenticatedJourneyApiTests(TestCase):
         self.assertIn(serializer1.data, res.data["results"])
         self.assertIn(serializer2.data, res.data["results"])
         self.assertNotIn(serializer3.data, res.data["results"])
+
+    def test_filter_journey_by_source_station(self):
+        station1 = sample_station(
+            name="Kiev",
+        )
+
+        Journey.objects.create(
+            departure_time="2023-01-12T00:00:00",
+            arrival_time="2023-01-13T00:00:00",
+            route=sample_route(
+                source=station1
+            ),
+            train=sample_train(),
+        )
+
+        station2 = sample_station(
+            name="Parish",
+        )
+
+        Journey.objects.create(
+            departure_time="2023-01-12T00:00:00",
+            arrival_time="2023-01-13T00:00:00",
+            route=sample_route(
+                source=station2
+            ),
+            train=sample_train(),
+        )
+
+        journey = Journey.objects.all().annotate(
+            tickets_available=Value(828, output_field=IntegerField())
+        )
+
+        journey1 = journey.get(pk=1)
+        serializer1 = JourneyListSerializer(journey1, many=False)
+
+        journey2 = journey.get(pk=2)
+        serializer2 = JourneyListSerializer(journey2, many=False)
+
+        res = self.client.get(
+            JOURNEY_URL,
+            {"source_station": "Kie"}
+        )
+
+        self.assertIn(serializer1.data, res.data["results"])
+        self.assertNotIn(serializer2.data, res.data["results"])
