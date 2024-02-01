@@ -84,9 +84,38 @@ class AuthenticatedRouteApiTests(TestCase):
         station1 = sample_station()
         station2 = sample_station()
         payload = {
-            "source": station1,
-            "destination": station2,
+            "source": station1.pk,
+            "destination": station2.pk,
         }
 
         res = self.client.post(ROUTE_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminRouteApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "testpassword",
+            is_staff=True,
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_route(self):
+        station1 = sample_station()
+        station2 = sample_station()
+        payload = {
+            "source": station1.pk,
+            "destination": station2.pk,
+        }
+
+        res = self.client.post(ROUTE_URL, payload)
+        route = Route.objects.get(pk=res.data["id"])
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(payload["source"], route.source.pk)
+        self.assertEqual(
+            Station.objects.get(pk=payload["source"]),
+            route.source
+        )
