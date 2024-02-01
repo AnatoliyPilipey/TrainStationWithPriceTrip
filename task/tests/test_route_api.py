@@ -119,3 +119,17 @@ class AdminRouteApiTests(TestCase):
             Station.objects.get(pk=payload["source"]),
             route.source
         )
+
+    def test_delete_route(self):
+        station1 = sample_station()
+        station2 = sample_station()
+        route = Route.objects.create(
+            source=station1,
+            destination=station2
+        )
+
+        url = detail_url(route.id)
+
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
