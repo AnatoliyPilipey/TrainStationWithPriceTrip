@@ -89,12 +89,6 @@ class UnauthenticatedJourneyApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class JourneyPagination(PageNumberPagination):
-    page_size = 2
-    page_size_query_param = "page_size"
-    max_page_size = 100
-
-
 class AuthenticatedJourneyApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
