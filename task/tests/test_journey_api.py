@@ -226,3 +226,14 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         self.assertIn(serializer1.data, res.data["results"])
         self.assertNotIn(serializer2.data, res.data["results"])
+
+    def test_create_journey_forbidden(self):
+        payload = {
+            "departure_time": "2024-01-12T00:00:00",
+            "arrival_time": "2024-01-13T00:00:00",
+            "route": sample_route(),
+            "train": sample_train(),
+        }
+
+        res = self.client.post(JOURNEY_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
