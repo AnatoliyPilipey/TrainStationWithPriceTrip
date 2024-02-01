@@ -70,3 +70,14 @@ class AuthenticatedStationApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_create_station_forbidden(self):
+        payload = {
+            "name": "Sample station",
+            "latitude": 55.3,
+            "longitude": 20.3,
+            "service_cost": 2.3,
+        }
+
+        res = self.client.post(STATION_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
