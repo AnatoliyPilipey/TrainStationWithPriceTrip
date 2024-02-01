@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from django.db.models import Value, IntegerField
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.test import APIClient
 from rest_framework import status
 from task.models import (
@@ -286,3 +285,17 @@ class AdminJourneyApiTests(TestCase):
         self.assertIn(crew1, crew)
         self.assertIn(crew2, crew)
         self.assertNotIn(crew3, crew)
+
+    def test_delete_journey(self):
+        journey = Journey.objects.create(
+            departure_time="2024-01-12",
+            arrival_time="2024-01-15",
+            route=sample_route(),
+            train=sample_train(),
+        )
+
+        url = detail_url(journey.id)
+
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
