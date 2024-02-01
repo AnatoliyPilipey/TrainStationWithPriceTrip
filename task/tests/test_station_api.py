@@ -108,3 +108,12 @@ class AdminStationApiTests(TestCase):
         for key in payload.keys():
 
             self.assertEqual(payload[key], getattr(station, key))
+
+    def test_delete_station(self):
+        station = sample_station()
+
+        url = detail_url(station.id)
+
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
