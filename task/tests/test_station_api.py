@@ -81,3 +81,30 @@ class AuthenticatedStationApiTests(TestCase):
 
         res = self.client.post(STATION_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminStationApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "testpassword",
+            is_staff=True,
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_station(self):
+        payload = {
+            "name": "Sample station",
+            "latitude": 55.3,
+            "longitude": 20.3,
+            "service_cost": 2.3,
+        }
+
+        res = self.client.post(STATION_URL, payload)
+        station = Station.objects.get(id=res.data["id"])
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        for key in payload.keys():
+
+            self.assertEqual(payload[key], getattr(station, key))
