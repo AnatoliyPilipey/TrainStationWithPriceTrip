@@ -267,3 +267,28 @@ class AdminJourneyApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(journey.route, route)
         self.assertEqual(journey.train, train)
+
+    def test_create_journey_with_crew(self):
+        route = sample_route()
+        train = sample_train()
+        crew1 = sample_crew(first_name="Anita")
+        crew2 = sample_crew(first_name="Sacha")
+        crew3 = sample_crew(first_name="Dima")
+        payload = {
+            "departure_time": "2024-01-12T00:00:00",
+            "arrival_time": "2024-01-13T00:00:00",
+            "route": route.pk,
+            "train": train.pk,
+            "crew": (crew1.pk, crew2.pk),
+        }
+
+        res = self.client.post(JOURNEY_URL, payload)
+        journey = Journey.objects.get(pk=res.data["id"])
+        crew = journey.crew.all()
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(crew.count(), 2)
+        self.assertIn(crew1, crew)
+        self.assertIn(crew1, crew)
+        self.assertIn(crew2, crew)
+        self.assertNotIn(crew3, crew)
