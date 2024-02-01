@@ -237,3 +237,33 @@ class AuthenticatedJourneyApiTests(TestCase):
 
         res = self.client.post(JOURNEY_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminJourneyApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            "test@test.com",
+            "testpassword",
+            is_staff=True,
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_create_journey(self):
+        route = sample_route()
+        train = sample_train()
+        crew = sample_crew()
+        payload = {
+            "departure_time": "2024-01-12T00:00:00",
+            "arrival_time": "2024-01-13T00:00:00",
+            "route": route.pk,
+            "train": train.pk,
+            "crew": crew.pk,
+        }
+
+        res = self.client.post(JOURNEY_URL, payload)
+        journey = Journey.objects.get(pk=res.data["id"])
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(journey.route, route)
+        self.assertEqual(journey.train, train)
