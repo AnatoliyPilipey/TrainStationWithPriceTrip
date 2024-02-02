@@ -64,7 +64,8 @@ class TrainDetailSerializer(TrainSerializer):
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
-        fields = ("id", "first_name", "last_name")
+        fields = ("id", "first_name", "last_name", "image")
+        read_only_fields = ("image",)
 
 
 class CrewListSerializer(CrewSerializer):
