@@ -74,6 +74,12 @@ class CrewListSerializer(CrewSerializer):
         fields = ("id", "full_name")
 
 
+class CrewImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = ("id", "image")
+
+
 class StationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station

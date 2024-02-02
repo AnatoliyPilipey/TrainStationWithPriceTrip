@@ -33,7 +33,7 @@ def crew_image_file_path(instance, filename):
 
     filename = f"{slugify(instance.first_name)}-{uuid.uuid4()}.{extension}"
 
-    return os.path.join("upload/buses/", filename)
+    return os.path.join("upload/crew/", filename)
 
 
 class Crew(models.Model):
