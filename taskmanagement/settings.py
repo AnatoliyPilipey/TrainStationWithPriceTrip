@@ -168,10 +168,10 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Train Station With Price Trip',
-    'DESCRIPTION': 'Ordering tickets for rail travel',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Train Station With Price Trip",
+    "DESCRIPTION": "Ordering tickets for rail travel",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "defaultModelRendering": "model",
@@ -179,6 +179,3 @@ SPECTACULAR_SETTINGS = {
         "defaultModelExpandDepth": 2,
     }
 }
-
-
-

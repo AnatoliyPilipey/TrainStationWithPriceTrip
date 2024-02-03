@@ -16,14 +16,10 @@ def station_distance(
 ) -> float:
     lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
 
-    delta_lat = lat2 - lat1
-    delta_lon = lon2 - lon1
-
-    a = sin(delta_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(delta_lon / 2) ** 2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-    earth_radius = 6371.0
-    distance = earth_radius * c
+    corner_lat = sin((lat2 - lat1) / 2) ** 2
+    corner_lon = cos(lat1) * cos(lat2) * sin((lon2 - lon1) / 2) ** 2
+    corner = corner_lat + corner_lon
+    distance = 6371.0 * 2 * atan2(sqrt(corner), sqrt(1 - corner))
 
     return distance * 100 // 1 / 100
 
@@ -130,7 +126,8 @@ class Journey(models.Model):
         ordering = ["-departure_time"]
 
     def __str__(self):
-        return f"Departure time:{self.departure_time} arrival time:{self.arrival_time}"
+        return f"Departure time:{self.departure_time} " \
+               f"arrival time:{self.arrival_time}"
 
     @property
     def price_trip(self) -> float:
@@ -204,7 +201,8 @@ class Ticket(models.Model):
 
     def __str__(self):
         return (
-            f"{str(self.journey)} (row: {self.cargo_num}, seat: {self.place_in_cargo})"
+            f"{str(self.journey)} (row: {self.cargo_num}, "
+            f"seat: {self.place_in_cargo})"
         )
 
     class Meta:

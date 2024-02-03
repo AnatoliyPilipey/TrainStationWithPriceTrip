@@ -52,7 +52,8 @@ class TrainTypeViewSet(
 
 
 class TrainViewSet(viewsets.ModelViewSet):
-    """Name of the train with car number and number of seats in the car"""
+    """Name of the train with car number
+    and number of seats in the car"""
     queryset = Train.objects.select_related("train_type")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -192,12 +193,14 @@ class JourneyViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "departure_date",
                 type={"type": "date"},
-                description="Filter by departure date (ex. ?departure_date=2023-10-25,2024-11-12"
+                description="Filter by departure date "
+                            "(ex. ?departure_date=2023-10-25,2024-11-12"
             ),
             OpenApiParameter(
                 "source_station",
                 type={"type": "str"},
-                description="Filter by source station name (ex. ?source_station=Ki"
+                description="Filter by source station name "
+                            "(ex. ?source_station=Ki"
             )
         ]
     )
@@ -242,5 +245,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
-        """An order created by a registered user with simultaneous purchase of tickets"""
+        """An order created by a registered user
+        with simultaneous purchase of tickets"""
         return super().list(request, *args, **kwargs)
