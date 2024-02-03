@@ -6,6 +6,7 @@ djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
 drf-spectacular==0.27.0
 flake8==5.0.4
+flake8-quotes==3.3.2
 flake8-variables-names==0.0.5
 inflection==0.5.1
 jsonschema==4.20.0
