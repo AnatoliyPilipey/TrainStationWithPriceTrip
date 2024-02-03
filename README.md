@@ -41,9 +41,18 @@ This service will give you the opportunity to select the route, departure time, 
     python manage.py migrate
     ```
 9. Using the fixture with test data, we fill the database.  
+    In settings.py set:
+    ```shell 
+    USE_TZ = True
+    ``` 
+    Load db
     ```shell 
     python manage.py loaddata db.json
-    ```
+    ```  
+    In settings.py set:
+    ```shell 
+    USE_TZ = False
+    ```  
 10. Disabling authentication. Specify in the .env
     ```shell 
     PERMISSIONS_STATUS = off
