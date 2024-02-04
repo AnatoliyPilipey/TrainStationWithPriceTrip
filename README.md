@@ -104,8 +104,9 @@ This service will give you the opportunity to select the route, departure time, 
     ```shell 
     http://127.0.0.1:8000/api/doc/redoc/
     ```
-    ![Redoc](redoc.jpg)
+    ![Redoc](redoc.jpg)  
 
+![Diagram](diagram%20Train%20Station.jpg)
 #### Note  
 Set PERMISSIONS_STATUS = on when you run the python manage.py test
 
