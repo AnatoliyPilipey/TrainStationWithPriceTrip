@@ -120,14 +120,16 @@ class Journey(models.Model):
     arrival_time = models.DateTimeField()
     route = models.ForeignKey(Route, on_delete=models.CASCADE)
     train = models.ForeignKey(Train, on_delete=models.CASCADE)
-    crew = models.ManyToManyField(Crew, related_name="journey")
+    crew = models.ManyToManyField(Crew, related_name="journeys")
 
     class Meta:
         ordering = ["-departure_time"]
 
     def __str__(self):
-        return f"Departure time:{self.departure_time} " \
-               f"arrival time:{self.arrival_time}"
+        return (
+            f"Departure time:{self.departure_time} "
+            f"arrival time:{self.arrival_time}"
+        )
 
     @property
     def price_trip(self) -> float:
